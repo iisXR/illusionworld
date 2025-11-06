@@ -52,15 +52,7 @@
             <!-- Entities -->
             <!-- Note for reflections: To change rflections Repalace "g_cube" with "soft_city","soft_landscape" or "soft_room"-->
 
- <template id="avatar-template">
-  <a-entity player-info>
-    <a-entity class="model">
-      <a-text class="nametag" align="center" value="?" position="0 2.1 0" scale=".5 .5 .5"></a-text>
-    </a-entity>
-    <!-- <a-entity class="camera" networked-audio-source></a-entity> -->
-    <a-entity class="camera"></a-entity>
-  </a-entity>
-</template>
+
 	
 			<a-entity id="#MainMesh" animation-mixer="clip: *; loop: forever; clampWhenFinished: true;" gltf-model="#MainMesh" scale="1 1 1" position= "0 0 0" visible="true" shadow="cast: true" 
             geometry="" cube-env-map="path: /env/g_cube/; extension: jpg; reflectivity: 0.99;"></a-entity>
@@ -70,7 +62,17 @@
 				
 		<!-- <a-entity ocean position="0 0.12611 0" rotation="-89.48855914809789 179.9998479605043 179.9998479605043" scale="4 4 4"></a-entity> -->
       <!-- Camera AKA PLAYER  "constrainToNavMesh: true;" --> 
-       <a-entity
+     <template id="avatar-template">
+  <a-entity player-info>
+    <a-entity class="model">
+      <a-text class="nametag" align="center" value="?" position="0 2.1 0" scale=".5 .5 .5"></a-text>
+    </a-entity>
+    <!-- <a-entity class="camera" networked-audio-source></a-entity> -->
+    <a-entity class="camera"></a-entity>
+  </a-entity>
+</template> 
+	
+	<a-entity
   id="rig"
   movement-controls="fly:false;controls: gamepad, trackpad, keyboard, nipple;"
   spawn-in-circle="radius:1"
