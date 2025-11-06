@@ -12,16 +12,10 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.min.js"></script>
-    <script src="/easyrtc/easyrtc.js"></script>
-    <script src="https://unpkg.com/networked-aframe@^0.14.0/dist/networked-aframe.min.js"></script>
-    <script src="/js/player-info.js"></script>
-		
-		<!-- <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+		<script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.6.0/dist/aframe-extras.min.js"></script>
 		<script src="https://unpkg.com/aframe-mirror-component/dist/aframe-mirror-component.min.js"></script>
-      <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+        <!-- <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>             
 			<script type="text/javascript" src="js/webxr.js"></script>
         <script type="text/javascript" src="js/camera-cube-env.js"></script>
@@ -32,14 +26,13 @@
 
     </head>
    
-
-<a-scene gltf-model="meshoptDecoderPath:https://unpkg.com/meshoptimizer@0.19.0/meshopt_decoder.js"
+]
+            <a-scene
   inspector="url: https://cdn.jsdelivr.net/gh/c-frame/aframe-editor@1.7.x/dist/aframe-editor.min.js">
           <!-- Assets  the scr= for "MainMesh" and "sky" can be updated with your own files-->
             <a-assets>
                 <a-asset-item id="MainMesh"   src="./assets/Model.glb"></a-asset-item>
                 <a-asset-item id="navmesh" src="./assets/Nav.glb"></a-asset-item> 
-				<a-asset-item id="rig" scr="https://files.catbox.moe/w1vept.glb"
                 <img id="sky"                 src="./assets/sky.jpg">
                 <img id="icon-play"           src="./resources/play.png">
                 <img id="icon-pause"          src="./resources/pause.png">
@@ -51,37 +44,25 @@
 
             <!-- Entities -->
             <!-- Note for reflections: To change rflections Repalace "g_cube" with "soft_city","soft_landscape" or "soft_room"-->
-
-
-	
+            
 			<a-entity id="#MainMesh" animation-mixer="clip: *; loop: forever; clampWhenFinished: true;" gltf-model="#MainMesh" scale="1 1 1" position= "0 0 0" visible="true" shadow="cast: true" 
             geometry="" cube-env-map="path: /env/g_cube/; extension: jpg; reflectivity: 0.99;"></a-entity>
             <a-entity id="Navmesh" nav-mesh gltf-model="#navmesh" visible="false"></a-entity>
-			<a-sphere position="0 1.25 -5" radius="1.25" scale=".5 .5 .5" color="#ffd9b3"></a-sphere>   
+			<a-sphere position="0 1.25 -5" radius="1.25" scale=".5 .5 .5" color="#EF2D5E"></a-sphere>   
 			
 				
 		<!-- <a-entity ocean position="0 0.12611 0" rotation="-89.48855914809789 179.9998479605043 179.9998479605043" scale="4 4 4"></a-entity> -->
-      <!-- Camera AKA PLAYER  "constrainToNavMesh: true;" --> 
-     <template id="avatar-template">
-  <a-entity player-info>
-    <a-entity class="model">
-      <a-text class="nametag" align="center" value="?" position="0 2.1 0" scale=".5 .5 .5"></a-text>
-    </a-entity>
-    <!-- <a-entity class="camera" networked-audio-source></a-entity> -->
-    <a-entity class="camera"></a-entity>
-  </a-entity>
-</template> 
-	
-	<a-entity
-  id="rig"
-  movement-controls="fly:false;controls: gamepad, trackpad, keyboard, nipple;"
-  spawn-in-circle="radius:1"
-  networked="template:#avatar-template;attachTemplateToLocal:false"
-  player-info
->
-  <a-entity id="player" class="camera" camera position="0 1.6 0" look-controls></a-entity>
-</a-entity>   
-              
+      <!-- Camera AKA PLAYER-->
+           
+                <a-entity id="player" movement-controls="constrainToNavMesh: true;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="0 0 0" rotation="0 0 0">
+        <!-- camera -->
+        <a-entity id="head" camera="active: true" position="0 1 0" look-controls="pointerLockEnabled: true; reverseMouseDrag: true" ></a-entity>
+              <!-- Left Controller -->
+              <a-entity id="leftHand" hand-controls="hand: left; handModelStyle: lowPoly; color: #15ACCF" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; button: trigger; curveShootingSpeed: 18; landingMaxAngle: 60" visible="true"></a-entity>
+              <!-- Right Controller -->
+              <a-entity id="rightHand" hand-controls="hand: right; handModelStyle: lowPoly; color: #15ACCF" laser-controls raycaster="showLine: true; far: 10; interval: 0; objects: .clickable, a-link;" line="color: #7cfc00; opacity: 0.5" visible="true"></a-entity>
+      </a-entity>
+      
 </a-entity>
       
 
