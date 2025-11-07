@@ -22,8 +22,15 @@
             geometry="" cube-env-map="path: /env/g_cube/; extension: jpg; reflectivity: 0.99;"></a-entity>
             <a-entity id="Navmesh" nav-mesh gltf-model="#navmesh" visible="false"></a-entity>
 			<a-sphere position="0 1.25 -5" radius="1.25" scale=".5 .5 .5" color="#EF2D5E"></a-sphere>   
-      <a-entity id="player" networked="template:#avatar-template;attachTemplateToLocal:false;" camera wasd-controls look-controls>
+      
+		<a-entity id="player" networked="template:#avatar-template;attachTemplateToLocal:false;" movement-controls="constrainToNavMesh: true;" camera wasd-controls look-controls>
       </a-entity>
+		<!-- Lights -->
+            <a-entity light="intensity: 1.0; castShadow: true; shadowBias: -0.001; shadowCameraFar: 501.02; shadowCameraBottom: 12; shadowCameraFov: 101.79; shadowCameraNear: 0; shadowCameraTop: -5; shadowCameraRight: 10; shadowCameraLeft: -10; shadowRadius: 2" position="1.36586 7.17965 1"></a-entity>
+			<a-entity light="type: ambient; intensity: 1.0"></a-entity>
+
+            <!-- Sky -->
+            <a-sky src="#sky" material="" geometry="" rotation="0 90 0"></a-sky>
     </a-scene>
   </body>
 </html>
