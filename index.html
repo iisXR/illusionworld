@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>wo wo wo</title>
+    <title>otowo</title>
     <meta name="description" content="Tracked Controllers — Networked-Aframe" />
 
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
@@ -92,7 +92,9 @@
         </template>
       </a-assets>
 
-      <a-entity environment="preset:arches"></a-entity>
+     	<a-entity id="#MainMesh" animation-mixer="clip: *; loop: forever; clampWhenFinished: true;" gltf-model="#MainMesh" scale="1 1 1" position= "0 0 0" visible="true" shadow="cast: true" 
+            geometry="" cube-env-map="path: /env/g_cube/; extension: jpg; reflectivity: 0.99;"></a-entity>
+            <a-entity id="Navmesh" nav-mesh gltf-model="#navmesh" visible="false"></a-entity>
 
       <a-entity id="rig" movement-controls="fly:true;" spawn-in-circle="radius:3" networked="template:#rig-template;">
         <a-entity
@@ -116,6 +118,12 @@
           networked="template:#right-hand-default-template"
         ></a-entity>
       </a-entity>
+        <!-- Lights -->
+            <a-entity light="intensity: 1.0; castShadow: true; shadowBias: -0.001; shadowCameraFar: 501.02; shadowCameraBottom: 12; shadowCameraFov: 101.79; shadowCameraNear: 0; shadowCameraTop: -5; shadowCameraRight: 10; shadowCameraLeft: -10; shadowRadius: 2" position="1.36586 7.17965 1"></a-entity>
+			<a-entity light="type: ambient; intensity: 1.0"></a-entity>
+
+            <!-- Sky -->
+            <a-sky src="#sky" material="" geometry="" rotation="0 90 0"></a-sky>
     </a-scene>
   </body>
 </html>
