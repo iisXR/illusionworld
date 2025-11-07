@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>forksandbutter</title>
+    <title>00forksandbutter</title>
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.min.js"></script>
     <script src="/easyrtc/easyrtc.js"></script>
@@ -23,7 +23,7 @@
             <a-entity id="Navmesh" nav-mesh gltf-model="#navmesh" visible="false"></a-entity>
 			<a-sphere position="0 1.25 -5" radius="1.25" scale=".5 .5 .5" color="#EF2D5E"></a-sphere>   
       
-		<a-entity id="player" networked="template:#avatar-template;attachTemplateToLocal:false;" movement-controls="constrainToNavMesh: true;" camera wasd-controls look-controls>
+		<a-entity id="player" networked="template:#avatar-template;attachTemplateToLocal:false;" camera wasd-controls look-controls>
       </a-entity>
 		<!-- Lights -->
             <a-entity light="intensity: 1.0; castShadow: true; shadowBias: -0.001; shadowCameraFar: 501.02; shadowCameraBottom: 12; shadowCameraFov: 101.79; shadowCameraNear: 0; shadowCameraTop: -5; shadowCameraRight: 10; shadowCameraLeft: -10; shadowRadius: 2" position="1.36586 7.17965 1"></a-entity>
