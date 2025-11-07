@@ -3,26 +3,20 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>towo</title>
-    <meta name="description" content="Tracked Controllers — Networked-Aframe" />
+    <title>Persistent Sphere Example — Networked-Aframe</title>
+    <meta name="description" content="Persistent Sphere Example — Networked-Aframe" />
 
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.min.js"></script>
     <script src="/easyrtc/easyrtc.js"></script>
     <script src="/dist/networked-aframe.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.controls.min.js"></script>
-    <script src="/js/spawn-in-circle.component.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-randomizer-components@3.0.2/dist/aframe-randomizer-components.min.js"></script>
-
     <script>
-      // Temporary workaround for template declaration; see issue 167
+      // see issue https://github.com/networked-aframe/networked-aframe/issues/267
       NAF.schemas.getComponentsOriginal = NAF.schemas.getComponents;
       NAF.schemas.getComponents = (template) => {
-        if (!NAF.schemas.hasTemplate('#head-template')) {
+        if (!NAF.schemas.hasTemplate('#avatar-template')) {
           NAF.schemas.add({
-            template: '#head-template',
+            template: '#avatar-template',
             components: [
               {
                 component: 'position',
@@ -40,89 +34,103 @@
             ]
           });
         }
-
-        if (!NAF.schemas.hasTemplate('#rig-template')) {
+        if (!NAF.schemas.hasTemplate('#sphere-template')) {
           NAF.schemas.add({
-            template: '#rig-template',
+            template: '#sphere-template',
             components: [
+              'position',
               {
-                component: 'position',
-                requiresNetworkUpdate: NAF.utils.vectorRequiresUpdate(0.001)
-              },
-              {
-                component: 'rotation',
-                requiresNetworkUpdate: NAF.utils.vectorRequiresUpdate(0.5)
+                component: 'material',
+                property: 'color'
               }
             ]
           });
         }
-
         const components = NAF.schemas.getComponentsOriginal(template);
         return components;
       };
     </script>
-  </head>
 
+    <script src="https://cdn.jsdelivr.net/npm/aframe-randomizer-components@3.0.2/dist/aframe-randomizer-components.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
+    <script src="/js/spawn-in-circle.component.js"></script>
+    <script src="/js/color-changer.component.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+  </head>
   <body>
     <a-scene
+      cursor="rayOrigin: mouse"
+      raycaster="objects:.raycastable"
       networked-scene="
-        room: handcontrollers;
+        room: basic-persistent;
         debug: true;
-        adapter: wseasyrtc;
-    "
+        adapter: wseasyrtc"
     >
       <a-assets>
-        <template id="rig-template">
-          <a-entity></a-entity>
+        <!-- Templates -->
+        <template id="sphere-template">
+          <a-entity class="raycastable" geometry="primitive: sphere" material="color: red" color-changer></a-entity>
         </template>
 
-        <template id="head-template">
+        <!-- Avatar -->
+        <template id="avatar-template">
           <a-entity class="avatar">
-            <a-sphere class="head" scale="0.2 0.22 0.2" random-color></a-sphere>
+            <a-sphere class="head" scale="0.45 0.5 0.4"></a-sphere>
             <a-entity class="face" position="0 0.05 0">
-              <a-sphere class="eye" color="white" position="0.06 0.05 -0.16" scale="0.04 0.04 0.04">
-                <a-sphere class="pupil" color="black" position="0 0 -1" scale="0.2 0.2 0.2"></a-sphere>
+              <a-sphere class="eye" color="#efefef" position="0.16 0.1 -0.35" scale="0.12 0.12 0.12">
+                <a-sphere class="pupil" color="#000" position="0 0 -1" scale="0.2 0.2 0.2"></a-sphere>
               </a-sphere>
-              <a-sphere class="eye" color="white" position="-0.06 0.05 -0.16" scale="0.04 0.04 0.04">
-                <a-sphere class="pupil" color="black" position="0 0 -1" scale="0.2 0.2 0.2"></a-sphere>
+              <a-sphere class="eye" color="#efefef" position="-0.16 0.1 -0.35" scale="0.12 0.12 0.12">
+                <a-sphere class="pupil" color="#000" position="0 0 -1" scale="0.2 0.2 0.2"></a-sphere>
               </a-sphere>
             </a-entity>
           </a-entity>
         </template>
+
+        <!-- /Templates -->
       </a-assets>
 
-     	<a-entity id="#MainMesh" animation-mixer="clip: *; loop: forever; clampWhenFinished: true;" gltf-model="#MainMesh" scale="1 1 1" position= "0 0 0" visible="true" shadow="cast: true" 
-            geometry="" cube-env-map="path: /env/g_cube/; extension: jpg; reflectivity: 0.99;"></a-entity>
-            <a-entity id="Navmesh" nav-mesh gltf-model="#navmesh" visible="false"></a-entity>
-
-      <a-entity id="rig" movement-controls="fly:true;" spawn-in-circle="radius:3" networked="template:#rig-template;">
+      <a-entity id="rig">
         <a-entity
           id="player"
+          networked="template:#avatar-template;attachTemplateToLocal:false;"
           camera
           position="0 1.6 0"
+          spawn-in-circle="radius:3"
+          wasd-controls
           look-controls
-          networked="template:#head-template;"
-          visible="false"
         >
+          <a-sphere class="head" visible="false" random-color></a-sphere>
         </a-entity>
-        <!-- here we add the user's local hands! These two entities are all that is needed. -->
-        <a-entity
-          id="my-tracked-left-hand"
-          networked-hand-controls="hand:left;color:gold;"
-          networked="template:#left-hand-default-template"
-        ></a-entity>
-        <a-entity
-          id="my-tracked-right-hand"
-          networked-hand-controls="hand:right;handModelStyle:controller;"
-          networked="template:#right-hand-default-template"
-        ></a-entity>
       </a-entity>
-        <!-- Lights -->
-            <a-entity light="intensity: 1.0; castShadow: true; shadowBias: -0.001; shadowCameraFar: 501.02; shadowCameraBottom: 12; shadowCameraFov: 101.79; shadowCameraNear: 0; shadowCameraTop: -5; shadowCameraRight: 10; shadowCameraLeft: -10; shadowRadius: 2" position="1.36586 7.17965 1"></a-entity>
-			<a-entity light="type: ambient; intensity: 1.0"></a-entity>
 
-            <!-- Sky -->
-            <a-sky src="#sky" material="" geometry="" rotation="0 90 0"></a-sky>
+      <a-entity
+        id="sphere"
+        networked="template:#sphere-template;networkId:sphere;persistent:true;owner:scene"
+      ></a-entity>
+      <!--
+        Specifying a owner that isn't a real participant is used so that the
+        participant joining the room won't send this entity because not the
+        current owner, otherwise the participant will send the default red
+        color to the other participants, overriding the color
+        defined by the current owner of the sphere in the room.
+      -->
+
+      <a-entity environment="preset:arches"></a-entity>
     </a-scene>
+
+    <div class="controls">
+      <p>
+        Click on the sphere to change its color. The color is shared between the participants. The sphere won't be
+        removed if the current owner (the latest participant that clicked on the sphere) leaves the room.
+      </p>
+    </div>
+
+    <script>
+      // Called by Networked-Aframe when connected to server
+      function onConnect() {
+        console.log('onConnect', new Date());
+      }
+    </script>
   </body>
 </html>
