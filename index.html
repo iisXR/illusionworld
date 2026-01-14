@@ -1,111 +1,68 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Booasic Example — Networked-Aframe</title>
-    <meta name="description" content="Basic Example — Networked-Aframe" />
+<!doctype html>
+<html lang="en">
+    <!-- If you wish to make an AR project, rename this file to "VR_index.html" and renamne "AR_index.html" to "index.html" then you are ready for assets and redesign-->
+    <!-- This template allows you to create a SIMPLE 6DOF webXR enviroment with a single .glb file and a equirectanglar image for the sky. By gregory vershbow, made with resources from three.js a-frame.io and silverslade -->
+    <!-- If exporting from blender be sure to merge all animation tracks -->
+    <!-- Creative Commons -->
+    
+    <head>
+        <title>WebXR Application</title>
+        <link rel="icon" type="image/png" href="favicon.ico"/>
+        <meta name="description" content="3D Application">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>               <script type="text/javascript" src="js/webxr.js"></script>
+        <script type="text/javascript" src="js/camera-cube-env.js"></script>
+        <script type="text/javascript" src="js/animation-mixer.js"></script>
+        <script type="text/javascript" src="js/hand-controls.js"></script>
 
-    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.min.js"></script>
-    <script src="/easyrtc/easyrtc.js"></script>
-    <script src="/dist/networked-aframe.js"></script>
-    <script>
-      // see issue https://github.com/networked-aframe/networked-aframe/issues/267
-      NAF.schemas.getComponentsOriginal = NAF.schemas.getComponents;
-      NAF.schemas.getComponents = (template) => {
-        if (!NAF.schemas.hasTemplate('#avatar-template')) {
-          NAF.schemas.add({
-            template: '#avatar-template',
-            components: [
-              {
-                component: 'position',
-                requiresNetworkUpdate: NAF.utils.vectorRequiresUpdate(0.001)
-              },
-              {
-                component: 'rotation',
-                requiresNetworkUpdate: NAF.utils.vectorRequiresUpdate(0.5)
-              },
-              {
-                selector: '.head',
-                component: 'material',
-                property: 'color'
-              }
-            ]
-          });
-        }
-        const components = NAF.schemas.getComponentsOriginal(template);
-        return components;
-      };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-randomizer-components@3.0.2/dist/aframe-randomizer-components.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
-    <script src="/js/spawn-in-circle.component.js"></script>
-  </head>
-  <body>
-    <a-scene
-      networked-scene="
-      room: basic;
-      debug: true;
-      adapter: easyrtc;
-    "
-    >
-      <a-assets>
-        <!-- Templates -->
+        
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body onload="init();">
+        <a-scene renderer="colorManagement: true;">
+            
+          <!-- Assets  the scr= for "MainMesh" and "sky" can be updated with your own files-->
+            <a-assets>
+				        <a-asset-item id="MainMesh"   src="./assets/Model.glb"></a-asset-item>
+                <a-asset-item id="navmesh" src="./assets/Nav.glb"></a-asset-item>  
+                <img id="sky"                 src="./assets/sky.jpg">
+                <img id="icon-play"           src="./resources/play.png">
+                <img id="icon-pause"          src="./resources/pause.png">
+                <img id="icon-play-skip-back" src="./resources/play-skip-back.png">
+                <img id="icon-mute"           src="./resources/mute.png">
+                <img id="icon-volume-low"     src="./resources/volume-low.png">
+                <img id="icon-volume-high"    src="./resources/volume-high.png">
+            </a-assets>
 
-        <!-- Avatar -->
-        <template id="avatar-template">
-          <a-entity class="avatar">
-            <a-sphere class="head" scale="0.45 0.5 0.4"></a-sphere>
-            <a-entity class="face" position="0 0.05 0">
-              <a-sphere class="eye" color="#efefef" position="0.16 0.1 -0.35" scale="0.12 0.12 0.12">
-                <a-sphere class="pupil" color="#000" position="0 0 -1" scale="0.2 0.2 0.2"></a-sphere>
-              </a-sphere>
-              <a-sphere class="eye" color="#efefef" position="-0.16 0.1 -0.35" scale="0.12 0.12 0.12">
-                <a-sphere class="pupil" color="#000" position="0 0 -1" scale="0.2 0.2 0.2"></a-sphere>
-              </a-sphere>
-            </a-entity>
-          </a-entity>
-        </template>
-
-        <!-- /Templates -->
-      </a-assets>
-
-      <a-entity id="rig">
-        <a-entity
-          id="player"
-          networked="template:#avatar-template;attachTemplateToLocal:false;"
-          camera
-          position="0 1.6 0"
-          spawn-in-circle="radius:3"
-          wasd-controls
-          look-controls
-        >
-          <a-sphere class="head" visible="false" random-color></a-sphere>
-        </a-entity>
+            <!-- Entities -->
+            <!-- Note for reflections: To change rflections Repalace "g_cube" with "soft_city","soft_landscape" or "soft_room"-->
+            
+			<a-entity id="#MainMesh" animation-mixer="clip: *; loop: forever; clampWhenFinished: true;" gltf-model="#MainMesh" scale="1 1 1" position= "0 0 0" visible="true" shadow="cast: true" 
+            geometry="" cube-env-map="path: /env/g_cube/; extension: jpg; reflectivity: 0.99;"></a-entity>
+            <a-entity id="NavMesh" nav-mesh gltf-model="#navmesh" scale="1 1 1" position= "0 -00.1 0" visible="true"></a-entity>
+      
+                      
+      <!-- Camera AKA PLAYER-->
+           
+                <a-entity id="player" movement-controls="constrainToNavMesh: true;" navigator="cameraRig: #cameraRig; cameraHead: #head; collisionEntities: .collision; ignoreEntities: .clickable" position="0 0 0" rotation="0 0 0">
+        <!-- camera -->
+        <a-entity id="head" camera="active: true" position="0 1 0" look-controls="pointerLockEnabled: true; reverseMouseDrag: true" ></a-entity>
+              <!-- Left Controller -->
+              <a-entity id="leftHand" hand-controls="hand: left; handModelStyle: lowPoly; color: #15ACCF" teleport-controls="cameraRig: #cameraRig; teleportOrigin: #head; button: trigger; curveShootingSpeed: 18; landingMaxAngle: 60" visible="true"></a-entity>
+              <!-- Right Controller -->
+              <a-entity id="rightHand" hand-controls="hand: right; handModelStyle: lowPoly; color: #15ACCF" laser-controls raycaster="showLine: true; far: 10; interval: 0; objects: .clickable, a-link;" line="color: #7cfc00; opacity: 0.5" visible="true"></a-entity>
       </a-entity>
+      
 
-      <a-entity environment="preset:arches"></a-entity>
-    </a-scene>
+            <!-- Lights -->
+            <a-entity light="intensity: 1.0; castShadow: true; shadowBias: -0.001; shadowCameraFar: 501.02; shadowCameraBottom: 12; shadowCameraFov: 101.79; shadowCameraNear: 0; shadowCameraTop: -5; shadowCameraRight: 10; shadowCameraLeft: -10; shadowRadius: 2" position="1.36586 7.17965 1"></a-entity>
+			<a-entity light="type: ambient; intensity: 1.0"></a-entity>
 
-    <script>
-      // Define custom schema for syncing avatar color, set by random-color
-      // NAF.schemas.add({
-      //   template: '#avatar-template',
-      //   components: [
-      //     'position',
-      //     'rotation',
-      //     {
-      //       selector: '.head',
-      //       component: 'material',
-      //       property: 'color'
-      //     }
-      //   ]
-      // });
-
-      // Called by Networked-Aframe when connected to server
-      function onConnect() {
-        console.log('onConnect', new Date());
-      }
-    </script>
-  </body>
+            <!-- Sky -->
+            <a-sky src="#sky" material="" geometry="" rotation="0 90 0"></a-sky>
+        </a-scene>
+    </body>
 </html>
